@@ -1,0 +1,48 @@
+
+
+services:
+  #mysql:
+  #  image: mysql:8.0
+  #  container_name: mysql-db
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: root
+  #    MYSQL_DATABASE: demoapp
+  #    MYSQL_USER: user
+  #    MYSQL_PASSWORD: password
+  #  ports:
+  #    - "3306:3306"
+  #  volumes:
+  #    - mysql_data:/var/lib/mysql
+  #  networks:
+  #    - spring-mysql-network
+
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+  #app:
+  #  build: .  # Se buscara un dockerfile en el mismo directorio donde esta el docker-compose
+  #  container_name: spring-app
+  #  restart: always
+  #  depends_on:
+  #    - mysql
+  #  ports:
+  #    - "8080:8080"
+  #  environment:
+  #    SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/demoapp
+  #    SPRING_DATASOURCE_USERNAME: user
+  #    SPRING_DATASOURCE_PASSWORD: password
+  #  networks:
+  #    - spring-mysql-network
+
+networks:
+  spring-mysql-network:
+    driver: bridge
+
+volumes:
+  #mysql_data:
+  redis-data:
