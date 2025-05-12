@@ -11,12 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -47,11 +49,27 @@ public class UserServiceImpl implements UserService{
     }
 
 
+    public String storeImage(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new RuntimeException("No se puede almacenar un archivo vacío");
+        }
 
+        // Generar un nombre único para el archivo
+        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+        String newFilename = UUID.randomUUID().toString() + "-" + originalFilename;
+
+        // Guardar el archivo
+        //Path destinationFile = Paths.get("test").resolve(newFilename).normalize();
+        //try (InputStream inputStream = file.getInputStream()) {
+        //    Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+        //}
+
+        return newFilename;
+    }
 
     @CacheEvict(value = CACHE_NAME, key = "'all'")
     @Override
-    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+    public UserResponseDTO createUser(UserRequestDTO userRequestDTO, MultipartFile profileImage) {
 
         if (userRequestDTO.getName() == null || userRequestDTO.getName().isEmpty()
                 || userRequestDTO.getLastnamefather() == null ||
@@ -59,8 +77,11 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("El nombre y apellido paterno son obligatorios");
         }
 
-        //Logica para completar en el campo username que sera un campo unico
-
+        // Almacenar la imagen y obtener el nombre
+        String profileImageName = null;
+        if (profileImage != null && !profileImage.isEmpty()) {
+            profileImageName = storeImage(profileImage);
+        }
 
         // Primera opción: primera letra del nombre + apellido paterno completo
         char firstLetter = userRequestDTO.getName().charAt(0);
@@ -114,6 +135,7 @@ public class UserServiceImpl implements UserService{
         // Convertir DTO a entidad
         User user = userMapper.toEntity(userRequestDTO);
         user.setUsername(username);
+        user.setProfileImage(profileImageName);
         // Guardar usuario en la base de datos
         User savedUser = userRepository.save(user);
 

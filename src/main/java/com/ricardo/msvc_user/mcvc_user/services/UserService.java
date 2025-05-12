@@ -3,6 +3,7 @@ package com.ricardo.msvc_user.mcvc_user.services;
 import com.ricardo.msvc_user.mcvc_user.dto.UserRequestDTO;
 import com.ricardo.msvc_user.mcvc_user.dto.UserResponseDTO;
 import com.ricardo.msvc_user.mcvc_user.entities.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface UserService {
 
     List<UserResponseDTO> getUsers();
 
-    UserResponseDTO createUser(UserRequestDTO user);
+    UserResponseDTO createUser(UserRequestDTO user, MultipartFile multipartFile);
 
     Void deleteUser(String id);
 

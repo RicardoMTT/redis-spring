@@ -42,6 +42,7 @@ public class UserMapper {
         userResponseDTO.setLastnameMother(user.getLastnameMother());
         userResponseDTO.setUsername(user.getUsername());
         userResponseDTO.setStatus(user.isStatus());
+        userResponseDTO.setProfileImage(user.getProfileImage());
 
         return userResponseDTO;
     }

@@ -17,6 +17,16 @@ public class UserResponseDTO {
     private String lastnamefather;
     private String lastnameMother;
     private boolean status;
+    private String profileImage;
+
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 
     public String getUsername() {
         return username;

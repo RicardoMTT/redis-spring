@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO createdUser = userService.createUser(userRequestDTO);
+    public ResponseEntity<UserResponseDTO> createUser(
+            @RequestPart("user") UserRequestDTO userRequestDTO,
+            @RequestPart(value = "image" ,required = false) MultipartFile profileImage) {
+        UserResponseDTO createdUser = userService.createUser(userRequestDTO,profileImage);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
