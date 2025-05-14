@@ -3,7 +3,9 @@ package com.ricardo.msvc_user.mcvc_user.controllers;
 import com.ricardo.msvc_user.mcvc_user.dto.UserRequestDTO;
 import com.ricardo.msvc_user.mcvc_user.dto.UserResponseDTO;
 import com.ricardo.msvc_user.mcvc_user.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +36,21 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getUsers());
     }
 
+    // Nuevo método para obtener usuarios paginados
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<UserResponseDTO>> getUsersPaginated(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(value = "sortBy", defaultValue = "username", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        Page<UserResponseDTO> result = this.userService.getUsersPaginated(page, size, sortBy, sortDir);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(
-            @RequestPart("user") UserRequestDTO userRequestDTO,
+            @Valid @RequestPart("user") UserRequestDTO userRequestDTO,
             @RequestPart(value = "image" ,required = false) MultipartFile profileImage) {
         UserResponseDTO createdUser = userService.createUser(userRequestDTO,profileImage);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);

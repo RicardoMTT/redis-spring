@@ -8,9 +8,6 @@ public class ErrorResponse {
     private String code;
     private LocalDateTime timestamp;
 
-    public ErrorResponse() {
-    }
-
     public ErrorResponse(String message, String code, LocalDateTime timestamp) {
         this.message = message;
         this.code = code;

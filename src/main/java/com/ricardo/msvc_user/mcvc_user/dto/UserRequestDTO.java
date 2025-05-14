@@ -1,6 +1,7 @@
 package com.ricardo.msvc_user.mcvc_user.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +13,16 @@ import lombok.NoArgsConstructor;
 public class UserRequestDTO {
 
     // No tiene username, ya que este campo se genera en el service, ya que es un id
+    @NotBlank(message = "EL campo name es obligatorio")
     private String name;
+
+    @NotBlank(message = "EL campo lastnamefather es obligatorio")
     private String lastnamefather;
+
+    @NotBlank(message = "EL campo lastnameMother es obligatorio")
     private String lastnameMother;
+
+    @NotBlank(message = "EL campo password es obligatorio")
     private String password;
     private boolean status;
 

@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +50,27 @@ public class UserServiceImpl implements UserService{
         List<UserResponseDTO> usersResponse = userMapper.toResponseDtoList(users);
 
         return usersResponse;
+    }
+
+    @Override
+    public Page<UserResponseDTO> getUsersPaginated(int page, int size, String sortBy, String sortDir) {
+        logger.info("Obteniendo usuarios paginados: página {}, tamaño {}, ordenados por {} {}",
+                page, size, sortBy, sortDir);
+        // Crear objeto Sort basado en los parámetros
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+
+        // Crear objeto Pageable
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // Obtener página de usuarios
+        Page<User> userPage = userRepository.findAll(pageable);
+
+        // Mapear cada usuario en la página a UserResponseDTO , usamos un mapper por que no
+        // es necesario obtener toda las propiedades de la entidad (por ejemplo la contraseña)
+        return userPage.map(user -> userMapper.toResponseDto(user));
+
     }
 
 
