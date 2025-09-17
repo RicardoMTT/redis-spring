@@ -49,15 +49,16 @@ public class RedisConfig {
         return template;
     }
 
+    // Configuración del gestor de caché usando Redis como backend de caché
     // Hace que las anotaciones @Cacheable, @CacheEvict, etc. funcionen con Redis.
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         // Configuración por defecto para todas las cachés
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(2)) // Tiempo de vida de 2 minutos en cache antes de ser obsoletos
-                .disableCachingNullValues()
+                .disableCachingNullValues() // No cachear valores nulos
                 .serializeKeysWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))// Serializador para las claves
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 

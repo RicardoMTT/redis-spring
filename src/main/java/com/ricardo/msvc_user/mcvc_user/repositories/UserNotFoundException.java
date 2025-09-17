@@ -1,4 +1,4 @@
-package com.ricardo.msvc_user.mcvc_user;
+package com.ricardo.msvc_user.mcvc_user.repositories;
 
 public class UserNotFoundException extends RuntimeException {
 

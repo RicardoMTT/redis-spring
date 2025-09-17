@@ -31,10 +31,10 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getUsers() {
-        long startTime = System.currentTimeMillis();
-        System.out.println("HELLO");
         return ResponseEntity.ok(this.userService.getUsers());
     }
+
+
 
     // Nuevo método para obtener usuarios paginados
     @GetMapping("/paginated")

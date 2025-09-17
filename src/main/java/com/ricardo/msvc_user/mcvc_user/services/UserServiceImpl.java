@@ -1,6 +1,6 @@
 package com.ricardo.msvc_user.mcvc_user.services;
 
-import com.ricardo.msvc_user.mcvc_user.UserNotFoundException;
+import com.ricardo.msvc_user.mcvc_user.repositories.UserNotFoundException;
 import com.ricardo.msvc_user.mcvc_user.dto.UserRequestDTO;
 import com.ricardo.msvc_user.mcvc_user.dto.UserResponseDTO;
 import com.ricardo.msvc_user.mcvc_user.entities.User;
@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService{
 
 
     private static final String CACHE_NAME = "users";
-    private static final String ALL_USERS_CACHE_KEY = "all";
+    private static final String ALL_USERS_CACHE = "allUsers";
+    private static final String PAGINATED_USERS_CACHE = "paginatedUsers";
 
     @Autowired
     private UserRepository userRepository;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService{
     private UserMapper userMapper;
 
     @Override
-    @Cacheable(value = CACHE_NAME, key = "'all'")
+    @Cacheable(value = ALL_USERS_CACHE, key = "'all'")
     public List<UserResponseDTO> getUsers() {
 
         logger.info("Obteniendo todos los usuarios de la base de datos");
@@ -53,6 +54,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(value = PAGINATED_USERS_CACHE,
+            key = "#page + '_' + #size + '_' + #sortBy + '_' + #sortDir")
     public Page<UserResponseDTO> getUsersPaginated(int page, int size, String sortBy, String sortDir) {
         logger.info("Obteniendo usuarios paginados: página {}, tamaño {}, ordenados por {} {}",
                 page, size, sortBy, sortDir);
@@ -92,7 +95,7 @@ public class UserServiceImpl implements UserService{
         return newFilename;
     }
 
-    @CacheEvict(value = CACHE_NAME, key = "'all'")
+    @CacheEvict(value = {ALL_USERS_CACHE, PAGINATED_USERS_CACHE}, allEntries = true) // Limpiar cachés relacionados al crear un nuevo usuario
     @Override
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO, MultipartFile profileImage) {
 
@@ -205,6 +208,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Cacheable(value = CACHE_NAME, key = "'all'")
     public UserResponseDTO getUserById(String username) {
         Optional<User> user = userRepository.findById(username);
 

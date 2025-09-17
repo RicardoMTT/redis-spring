@@ -1,7 +1,9 @@
-package com.ricardo.msvc_user.mcvc_user;
+package com.ricardo.msvc_user.mcvc_user.excepciones;
 
 import com.ricardo.msvc_user.mcvc_user.errors.ErrorResponse;
 import com.ricardo.msvc_user.mcvc_user.errors.ValidationErrorResponse;
+import com.ricardo.msvc_user.mcvc_user.repositories.UserAlreadyExistsException;
+import com.ricardo.msvc_user.mcvc_user.repositories.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
