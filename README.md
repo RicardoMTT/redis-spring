@@ -37,8 +37,21 @@ docker exec -it redis-spring-redis-1 redis-cli
 ```
 
 Una vez en el contenedor puedes ejecutar:
-
 ```bash
  GET users::all
 ```
 Siendo users::all la key
+
+
+## 🚀 Integrando prometheus
+
+Descargamos la imagen de dockerhub: 
+```bash
+docker pull prom/prometheus y docker run -p 9090:9090 prom/prometheus
+```
+luego debes crear un archivo .yml para editar la configuracion de prometheus por defecto ( debes entrar a localhost:9090 e ir a configuración , copia esa configuracion en un archivo y edita el target con :
+
+targets:
+    - host.docker.internal:8080
+    
+metrics_path: /actuator/prometheus # es el endpoint donde spring boot expone las metricas de prometheus por defecto
